@@ -29,7 +29,7 @@ spec:
       serviceAccountName: devops-agent
       containers:
       - name: agent
-        image: <ACR_LOGIN_SERVER>/devops-agent:latest
+        image: acregaksdemodev.azurecr.io/devops-agent:latest
         imagePullPolicy: Always
         env:
         - name: AZURE_DEVOPS_URL
