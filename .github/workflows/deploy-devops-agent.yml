@@ -54,6 +54,7 @@ jobs:
         with:
           context: ./docker
           push: true
+          platforms: linux/arm64
           tags: |
             ${{ env.REGISTRY_URL }}/${{ env.AGENT_IMAGE_NAME }}:latest
             ${{ env.REGISTRY_URL }}/${{ env.AGENT_IMAGE_NAME }}:${{ github.sha }}
