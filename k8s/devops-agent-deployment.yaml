@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: azure-devops-agents
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: devops-agent
+  namespace: azure-devops-agents
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: azure-devops-agent
+  namespace: azure-devops-agents
+  labels:
+    app: azure-devops-agent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: azure-devops-agent
+  template:
+    metadata:
+      labels:
+        app: azure-devops-agent
+    spec:
+      serviceAccountName: devops-agent
+      containers:
+      - name: agent
+        image: <ACR_LOGIN_SERVER>/devops-agent:latest
+        imagePullPolicy: Always
+        env:
+        - name: AZURE_DEVOPS_URL
+          valueFrom:
+            secretKeyRef:
+              name: devops-agent-secret
+              key: org-url
+        - name: AZURE_DEVOPS_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: devops-agent-secret
+              key: pat-token
+        - name: AGENT_NAME
+          value: "aks-devops-agent"
+        - name: AGENT_POOL
+          value: "Default"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "500m"
+          limits:
+            memory: "512Mi"
+            cpu: "1000m"
+        securityContext:
+          runAsUser: 1000
+          runAsNonRoot: false
+          allowPrivilegeEscalation: false
