@@ -6,6 +6,11 @@ RUN apt-get update && apt-get install -y \
     iputils-ping \
     jq \
     libssl-dev \
+    liblttng-ust0 \
+    libkrb5-3 \
+    zlib1g \
+    libicu-dev \
+    libcurl4 \
     libffi-dev \
     python3 \
     python3-dev \
