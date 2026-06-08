@@ -1,8 +1,12 @@
 FROM ubuntu:22.04
 
+
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
+# Make apt more resilient and verbose on failure to aid debugging under buildx/qemu
+RUN apt-get update -o Acquire::Retries=3 || (echo "apt update failed" && cat /etc/apt/sources.list && ls -la /etc/apt/sources.list.d && exit 1)
+
+RUN apt-get install -y --no-install-recommends \
     ca-certificates \
     apt-transport-https \
     gnupg \
@@ -23,7 +27,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     unzip \
     wget \
     zip \
-    && rm -rf /var/lib/apt/lists/*
+    || (echo "apt install failed" && tail -n +1 /var/log/apt/term.log || true) && rm -rf /var/lib/apt/lists/*
 
 RUN useradd -m -d /home/agentuser agentuser
 
