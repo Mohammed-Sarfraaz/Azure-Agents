@@ -26,7 +26,7 @@ case "$AGENT_ARCH" in
     ;;
 esac
 
-AGENT_URL="https://download.agent.dev.azure.com/agent/${AGENT_VERSION}/vsts-agent-linux-${AGENT_ARCH}-${AGENT_VERSION}.tar.gz"
+AGENT_URL="https://download.agent.dev.azure.com/agent/4.274.1/vsts-agent-linux-arm64-4.274.1.tar.gz"
 
 # Download agent
 echo "Downloading Azure DevOps agent version $AGENT_VERSION for architecture $AGENT_ARCH..."
