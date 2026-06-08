@@ -14,7 +14,7 @@ fi
 
 # Download agent
 echo "Downloading Azure DevOps agent version $AGENT_VERSION..."
-wget https://vstsagentpackage.azureedge.net/agent/$AGENT_VERSION/vsts-agent-linux-x64-$AGENT_VERSION.tar.gz -O agent.tar.gz
+wget https://download.agent.dev.azure.com/agent/4.274.1/vsts-agent-linux-arm64-4.274.1.tar.gz -O agent.tar.gz
 
 # Extract agent
 echo "Extracting agent..."
