@@ -30,7 +30,14 @@ AGENT_URL="https://download.agent.dev.azure.com/agent/${AGENT_VERSION}/vsts-agen
 
 # Download agent
 echo "Downloading Azure DevOps agent version $AGENT_VERSION for architecture $AGENT_ARCH..."
-wget -q "$AGENT_URL" -O agent.tar.gz
+if command -v wget >/dev/null 2>&1; then
+  wget -q "$AGENT_URL" -O agent.tar.gz
+elif command -v curl >/dev/null 2>&1; then
+  curl -sSL "$AGENT_URL" -o agent.tar.gz
+else
+  echo "Error: neither wget nor curl is available in the container. Install one to proceed." >&2
+  exit 1
+fi
 
 # Extract agent
 echo "Extracting agent..."
