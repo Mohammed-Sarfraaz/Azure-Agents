@@ -1,51 +1,32 @@
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 
+# Define the target architecture environment variables
+ENV TARGETARCH="linux-arm64"
 
+# Avoid prompts during package installation
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Make apt more resilient and verbose on failure to aid debugging under buildx/qemu
-RUN apt-get update -o Acquire::Retries=3 || (echo "apt update failed" && cat /etc/apt/sources.list && ls -la /etc/apt/sources.list.d && exit 1)
-
-RUN apt-get install -y --no-install-recommends \
-    ca-certificates \
+# Install core dependencies for the Azure Pipelines agent and tools
+RUN apt-get update && apt-get install -y --no-install-recommends \
     apt-transport-https \
-    gnupg \
+    ca-certificates \
     curl \
     git \
+    gnupg \
     iputils-ping \
     jq \
-    libssl-dev \
-    liblttng-ust0 \
-    libkrb5-3 \
-    zlib1g \
-    libicu-dev \
     libcurl4 \
-    libffi-dev \
-    python3 \
-    python3-dev \
-    python3-pip \
-    unzip \
-    wget \
+    libicu-dev \
+    libunwind8 \
+    netcache \
+    software-properties-common \
     zip \
-    || (echo "apt install failed" && tail -n +1 /var/log/apt/term.log || true) && rm -rf /var/lib/apt/lists/*
+    unzip \
+    && rm -rf /var/lib/apt/lists/*
 
-# Ensure wget and curl are present; fail build early if not
-RUN apt-get update && apt-get install -y --no-install-recommends wget curl && rm -rf /var/lib/apt/lists/*
-RUN command -v wget >/dev/null 2>&1 || command -v curl >/dev/null 2>&1 || (echo "Error: neither wget nor curl installed" && exit 1)
+WORKDIR /azp
 
-RUN useradd -m -d /home/agentuser agentuser
+COPY ./start.sh .
+RUN chmod +x ./start.sh
 
-WORKDIR /home/agentuser
-
-ENV AGENT_ALLOW_RUNASROOT=true
-
-# Create agent directory and ensure agentuser owns it so downloads succeed
-RUN mkdir -p /home/agentuser/myagent && chown -R agentuser:agentuser /home/agentuser/myagent
-
-COPY start.sh /home/agentuser/start.sh
-RUN chmod +x /home/agentuser/start.sh && chown agentuser:agentuser /home/agentuser/start.sh
-
-USER agentuser
-WORKDIR /home/agentuser/myagent
-
-ENTRYPOINT ["/home/agentuser/start.sh"]
+ENTRYPOINT [ "./start.sh" ]
