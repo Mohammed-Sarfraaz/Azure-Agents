@@ -21,10 +21,11 @@ WORKDIR /home/agentuser
 
 ENV AGENT_ALLOW_RUNASROOT=true
 
-RUN mkdir -p /home/agentuser/myagent && cd /home/agentuser/myagent
+# Create agent directory and ensure agentuser owns it so downloads succeed
+RUN mkdir -p /home/agentuser/myagent && chown -R agentuser:agentuser /home/agentuser/myagent
 
 COPY start.sh /home/agentuser/start.sh
-RUN chmod +x /home/agentuser/start.sh
+RUN chmod +x /home/agentuser/start.sh && chown agentuser:agentuser /home/agentuser/start.sh
 
 USER agentuser
 WORKDIR /home/agentuser/myagent
