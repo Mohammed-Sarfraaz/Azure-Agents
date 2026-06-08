@@ -29,6 +29,10 @@ RUN apt-get install -y --no-install-recommends \
     zip \
     || (echo "apt install failed" && tail -n +1 /var/log/apt/term.log || true) && rm -rf /var/lib/apt/lists/*
 
+# Ensure wget and curl are present; fail build early if not
+RUN apt-get update && apt-get install -y --no-install-recommends wget curl && rm -rf /var/lib/apt/lists/*
+RUN command -v wget >/dev/null 2>&1 || command -v curl >/dev/null 2>&1 || (echo "Error: neither wget nor curl installed" && exit 1)
+
 RUN useradd -m -d /home/agentuser agentuser
 
 WORKDIR /home/agentuser
