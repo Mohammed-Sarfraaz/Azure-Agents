@@ -23,8 +23,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /azp
+RUN chown -R 1000:1000 /azp
 
 COPY ./start.sh .
-RUN chmod +x ./start.sh
+RUN chmod +x ./start.sh && chown 1000:1000 ./start.sh
 
 ENTRYPOINT [ "./start.sh" ]
