@@ -29,15 +29,8 @@ esac
 AGENT_URL="https://download.agent.dev.azure.com/agent/4.274.1/vsts-agent-linux-arm64-4.274.1.tar.gz"
 
 # Download agent
-echo "Downloading Azure DevOps agent version $AGENT_VERSION for architecture $AGENT_ARCH..."
-if command -v wget >/dev/null 2>&1; then
-  wget -q "$AGENT_URL" -O agent.tar.gz
-elif command -v curl >/dev/null 2>&1; then
-  curl -sSL "$AGENT_URL" -o agent.tar.gz
-else
-  echo "Error: neither wget nor curl is available in the container. Install one to proceed." >&2
-  exit 1
-fi
+echo "Downloading Azure DevOps agent version"
+curl -sSL "$AGENT_URL" -o agent.tar.gz
 
 # Extract agent
 echo "Extracting agent..."
@@ -46,6 +39,7 @@ rm agent.tar.gz
 
 # Configure agent
 echo "Configuring agent..."
+
 ./config.sh \
     --unattended \
     --url "$AZURE_DEVOPS_URL" \
