@@ -8,7 +8,6 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # Install core dependencies for the Azure Pipelines agent and tools
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    apt-transport-https \
     ca-certificates \
     curl \
     git \
@@ -18,7 +17,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libcurl4 \
     libicu-dev \
     libunwind8 \
-    netcache \
     software-properties-common \
     zip \
     unzip \
